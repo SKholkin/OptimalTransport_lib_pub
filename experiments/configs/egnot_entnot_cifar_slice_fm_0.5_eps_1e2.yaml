@@ -1,0 +1,34 @@
+
+sampler: !ICFMSlice
+  sampler: !ReverseSampler
+    sampler: !GaussianToCIFAR
+  t_0: 0.5
+
+entnot_model: &entnot_model !GaussianEntropicNeuralOptimalTransport
+  T_net: !VariationalUNetForVector
+    img_channels: 3
+    base_channels: 64
+    channel_mults: (1, 2, 2)
+  f_net: !ResNet_D
+    size: 32
+    nc: 3 
+    nfilter: 64
+    nfilter_max: 512
+    res_ratio: 0.1
+  eps: 1e-2
+  lr: 1e-4
+  end_normal: True
+
+egnot_model: &egnot_model !EgNOT
+  f_net: !ResNet_D
+    size: 32
+    nc: 3 
+    nfilter: 64
+    nfilter_max: 512
+    res_ratio: 0.1
+  eps: 1e-2
+  lr: 3e-5
+
+ot_model: !EgNOTWithEntNOT
+  egNOT: *egnot_model 
+  entNOT: *entnot_model

@@ -1,0 +1,16 @@
+
+sampler: !ICFMSlice
+  sampler: !ReverseSampler
+    sampler: !GaussianToCIFAR
+  t_1: 0.5
+
+flow_matching: !FlowMatching
+  unet: !UNetForVector_V1
+    dim: (3, 32, 32)
+    num_res_blocks: 2
+    num_channels: 128
+    channel_mult: [1, 2, 2, 2]
+    num_heads: 4
+    num_head_channels: 64
+    attention_resolutions: "16"
+    dropout: 0.1

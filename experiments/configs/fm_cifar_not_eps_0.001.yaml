@@ -1,0 +1,33 @@
+
+ot_model: &ot_model !GaussianEntropicNeuralOptimalTransport
+  T_net: !VariationalUNetForVector
+    img_channels: 3
+    base_channels: 64
+    channel_mults: (1, 2, 2)
+  f_net: !ResNet_D
+    size: 32
+    nc: 3 
+    nfilter: 64
+    nfilter_max: 512
+    res_ratio: 0.1
+  eps: 1e-3
+  lr: 1e-4
+
+input_sampler: &input_sampler !ReverseSampler
+    sampler: !GaussianToCIFAR
+
+sampler: !OTSampler
+  ot_model: *ot_model
+  input_sampler: *input_sampler
+  state_dict_path: ../NOT_Sampler_ModelName_15:08:14-22-12_conf_egnot_entnot_cifar.pth
+
+flow_matching: !FlowMatching
+  unet: !UNetForVector_V1
+    dim: (3, 32, 32)
+    num_res_blocks: 2
+    num_channels: 128
+    channel_mult: [1, 2, 2, 2]
+    num_heads: 4
+    num_head_channels: 64
+    attention_resolutions: "16"
+    dropout: 0.1
